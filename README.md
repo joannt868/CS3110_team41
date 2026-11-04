@@ -3,3 +3,4 @@
 ## Team Members
 
 - Joann Tran (NetID: jt868)
+- Erik Mauricio (NETID: em882)
