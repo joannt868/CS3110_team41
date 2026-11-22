@@ -6,6 +6,11 @@ type location =
 type t
 (** The island and its remaining resources. *)
 
+(** The reason gathering cannot succeed. *)
+type gather_error =
+  | Unavailable_here
+  | Depleted
+
 val name : location -> string
 (** [name location] returns the name displayed for [location]. *)
 
@@ -28,3 +33,10 @@ val resources : t -> location -> (Resource.t * int) list
 val quantity : t -> location -> Resource.t -> int
 (** [quantity world location resource] returns the remaining quantity of
     [resource] at [location], or zero if it is unavailable there. *)
+
+val gather :
+  t -> location -> Resource.t -> (t * Resource.t, gather_error) result
+(** [gather world location resource] returns an updated world and one unit of
+    [resource] when that resource is available at [location]. It returns
+    [Error Unavailable_here] if the resource does not occur there, or
+    [Error Depleted] if its stock is empty. The input world is unchanged. *)

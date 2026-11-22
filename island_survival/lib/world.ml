@@ -7,6 +7,10 @@ type t = {
   forest : Resource.stock;
 }
 
+type gather_error =
+  | Unavailable_here
+  | Depleted
+
 (** [name location] returns the name displayed for [location]. *)
 let name = function
   | Beach -> "Beach"
@@ -54,3 +58,19 @@ let resources world location =
     [location]. *)
 let quantity world location resource =
   Resource.quantity (stock_at world location) resource
+
+(** [gather world location resource] returns a world with one unit removed and
+    the gathered resource, or an error if gathering cannot succeed. *)
+let gather world location resource =
+  if not (List.mem resource (native_resources location)) then
+    Error Unavailable_here
+  else
+    match Resource.take_one (stock_at world location) resource with
+    | Error Resource.Out_of_stock -> Error Depleted
+    | Ok stock ->
+        let updated =
+          match location with
+          | Beach -> { world with beach = stock }
+          | Forest -> { world with forest = stock }
+        in
+        Ok (updated, resource)
