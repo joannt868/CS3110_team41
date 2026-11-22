@@ -49,4 +49,27 @@ let stock_tests =
                     [ (Resource.Stone, 1); (Resource.Stone, 2) ])) );
        ]
 
-let () = run_test_tt_main ("resources" >::: [ name_tests; stock_tests ])
+let world_route_tests =
+  "world routes"
+  >::: [
+         ( "beach connects to forest" >:: fun _ ->
+           assert_equal [ World.Forest ] (World.destinations World.Beach);
+           assert_bool "route exists"
+             (World.can_move World.Beach World.Forest) );
+         ( "forest connects to beach" >:: fun _ ->
+           assert_equal [ World.Beach ] (World.destinations World.Forest);
+           assert_bool "route exists"
+             (World.can_move World.Forest World.Beach) );
+         ( "staying put is not a route" >:: fun _ ->
+           assert_bool "beach has no self route"
+             (not (World.can_move World.Beach World.Beach));
+           assert_bool "forest has no self route"
+             (not (World.can_move World.Forest World.Forest)) );
+         ( "location names" >:: fun _ ->
+           assert_equal "Beach" (World.name World.Beach);
+           assert_equal "Forest" (World.name World.Forest) );
+       ]
+
+let () =
+  run_test_tt_main
+    ("island survival" >::: [ name_tests; stock_tests; world_route_tests ])
