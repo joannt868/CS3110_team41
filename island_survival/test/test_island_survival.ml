@@ -70,6 +70,32 @@ let world_route_tests =
            assert_equal "Forest" (World.name World.Forest) );
        ]
 
+let world_stock_tests =
+  "world stocks"
+  >::: [
+         ( "beach starts with stone and fresh water" >:: fun _ ->
+           let world = World.starter () in
+           assert_equal
+             [ (Resource.Stone, 6); (Resource.Fresh_water, 5) ]
+             (World.resources world World.Beach);
+           assert_equal 6 (World.quantity world World.Beach Resource.Stone);
+           assert_equal 5
+             (World.quantity world World.Beach Resource.Fresh_water) );
+         ( "forest starts with wood and berries" >:: fun _ ->
+           let world = World.starter () in
+           assert_equal
+             [ (Resource.Wood, 8); (Resource.Berries, 6) ]
+             (World.resources world World.Forest);
+           assert_equal 8 (World.quantity world World.Forest Resource.Wood);
+           assert_equal 6 (World.quantity world World.Forest Resource.Berries)
+         );
+         ( "unavailable resources have zero quantity" >:: fun _ ->
+           let world = World.starter () in
+           assert_equal 0 (World.quantity world World.Beach Resource.Wood);
+           assert_equal 0 (World.quantity world World.Forest Resource.Stone) );
+       ]
+
 let () =
   run_test_tt_main
-    ("island survival" >::: [ name_tests; stock_tests; world_route_tests ])
+    ("island survival"
+    >::: [ name_tests; stock_tests; world_route_tests; world_stock_tests ])
