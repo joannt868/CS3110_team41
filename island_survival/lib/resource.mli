@@ -20,8 +20,8 @@ val stock_of_list : (t * int) list -> stock
     raises [Invalid_argument]. *)
 
 val quantity : stock -> t -> int
-(** [quantity stock resource] returns the number of units of [resource] in [stock],
-    or zero if it is absent. *)
+(** [quantity stock resource] returns the number of units of [resource] in
+    [stock], or zero if it is absent. *)
 
 val take_one : stock -> t -> (stock, take_error) result
 (** [take_one stock resource] returns a new stock with one fewer unit of
