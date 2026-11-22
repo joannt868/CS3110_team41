@@ -1,0 +1,4 @@
+(executable
+ (public_name island_survival)
+ (name main)
+ (libraries island_survival))
