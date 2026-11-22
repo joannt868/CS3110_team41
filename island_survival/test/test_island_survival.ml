@@ -95,7 +95,74 @@ let world_stock_tests =
            assert_equal 0 (World.quantity world World.Forest Resource.Stone) );
        ]
 
+let world_gather_tests =
+  "world gathering"
+  >::: [
+         ( "gathering updates only the requested stock" >:: fun _ ->
+           let original = World.starter () in
+           match World.gather original World.Beach Resource.Stone with
+           | Error _ -> assert_failure "expected stone at the beach"
+           | Ok (updated, gathered) ->
+               assert_equal Resource.Stone gathered;
+               assert_equal 6
+                 (World.quantity original World.Beach Resource.Stone);
+               assert_equal 5
+                 (World.quantity updated World.Beach Resource.Stone);
+               assert_equal 5
+                 (World.quantity updated World.Beach Resource.Fresh_water);
+               assert_equal 8
+                 (World.quantity updated World.Forest Resource.Wood) );
+         ( "forest gathering returns berries" >:: fun _ ->
+           let world = World.starter () in
+           match World.gather world World.Forest Resource.Berries with
+           | Error _ -> assert_failure "expected berries in the forest"
+           | Ok (updated, gathered) ->
+               assert_equal Resource.Berries gathered;
+               assert_equal 5
+                 (World.quantity updated World.Forest Resource.Berries) );
+         ( "resource unavailable at location" >:: fun _ ->
+           let world = World.starter () in
+           assert_equal (Error World.Unavailable_here)
+             (World.gather world World.Beach Resource.Wood);
+           assert_equal 6 (World.quantity world World.Beach Resource.Stone) );
+         ( "stock can be depleted" >:: fun _ ->
+           let original = World.starter () in
+           let rec gather_stone remaining world =
+             if remaining = 0 then world
+             else
+               match World.gather world World.Beach Resource.Stone with
+               | Ok (updated, Resource.Stone) ->
+                   gather_stone (remaining - 1) updated
+               | _ -> assert_failure "stone ran out too early"
+           in
+           let depleted = gather_stone 6 original in
+           assert_equal 0 (World.quantity depleted World.Beach Resource.Stone);
+           assert_equal (Error World.Depleted)
+             (World.gather depleted World.Beach Resource.Stone);
+           assert_equal 6 (World.quantity original World.Beach Resource.Stone);
+           assert_equal
+             [ (Resource.Stone, 0); (Resource.Fresh_water, 5) ]
+             (World.resources depleted World.Beach) );
+         ( "starter worlds are independent" >:: fun _ ->
+           let first = World.starter () in
+           let second = World.starter () in
+           match World.gather first World.Forest Resource.Wood with
+           | Error _ -> assert_failure "expected wood in the forest"
+           | Ok (updated, _) ->
+               assert_equal 7
+                 (World.quantity updated World.Forest Resource.Wood);
+               assert_equal 8 (World.quantity first World.Forest Resource.Wood);
+               assert_equal 8 (World.quantity second World.Forest Resource.Wood)
+         );
+       ]
+
 let () =
   run_test_tt_main
     ("island survival"
-    >::: [ name_tests; stock_tests; world_route_tests; world_stock_tests ])
+    >::: [
+           name_tests;
+           stock_tests;
+           world_route_tests;
+           world_stock_tests;
+           world_gather_tests;
+         ])
