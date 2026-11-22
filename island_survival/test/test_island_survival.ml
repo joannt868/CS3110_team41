@@ -54,12 +54,12 @@ let world_route_tests =
   >::: [
          ( "beach connects to forest" >:: fun _ ->
            assert_equal [ World.Forest ] (World.destinations World.Beach);
-           assert_bool "route exists"
-             (World.can_move World.Beach World.Forest) );
+           assert_bool "route exists" (World.can_move World.Beach World.Forest)
+         );
          ( "forest connects to beach" >:: fun _ ->
            assert_equal [ World.Beach ] (World.destinations World.Forest);
-           assert_bool "route exists"
-             (World.can_move World.Forest World.Beach) );
+           assert_bool "route exists" (World.can_move World.Forest World.Beach)
+         );
          ( "staying put is not a route" >:: fun _ ->
            assert_bool "beach has no self route"
              (not (World.can_move World.Beach World.Beach));
