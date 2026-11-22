@@ -3,6 +3,9 @@ type location =
   | Beach
   | Forest
 
+type t
+(** The island and its remaining resources. *)
+
 val name : location -> string
 (** [name location] returns the name displayed for [location]. *)
 
@@ -13,3 +16,15 @@ val destinations : location -> location list
 val can_move : location -> location -> bool
 (** [can_move origin destination] returns whether a direct route connects
     [origin] to [destination]. *)
+
+val starter : unit -> t
+(** [starter ()] returns the fixed starter island. The Beach has six Stone and
+    five Fresh_water; the Forest has eight Wood and six Berries. *)
+
+val resources : t -> location -> (Resource.t * int) list
+(** [resources world location] returns the native resources at [location] and
+    their remaining quantities, including resources whose quantity is zero. *)
+
+val quantity : t -> location -> Resource.t -> int
+(** [quantity world location resource] returns the remaining quantity of
+    [resource] at [location], or zero if it is unavailable there. *)
