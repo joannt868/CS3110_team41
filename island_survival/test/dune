@@ -1,3 +1,7 @@
 (test
  (name test_island_survival)
  (libraries ounit2 island_survival))
+
+(test
+ (name test_crafting)
+ (libraries ounit2 island_survival))
