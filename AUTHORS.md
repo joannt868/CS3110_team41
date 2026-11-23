@@ -9,3 +9,6 @@ how it works. This assistance covered:
 - `island_survival/lib/player.ml`, `island_survival/lib/player.mli`
 - `island_survival/lib/resource.ml`, `island_survival/lib/resource.mli` (`add`)
 - `island_survival/test/test_player.ml`, `island_survival/test/test_island_survival.ml` (`add` tests)
+Joann Tran (jt868) used ChatGPT to help write the four OUnit tests. This assistance covered:
+- `island_survival/test/test_crafting.ml`
+
