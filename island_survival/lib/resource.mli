@@ -23,6 +23,11 @@ val quantity : stock -> t -> int
 (** [quantity stock resource] returns the number of units of [resource] in
     [stock], or zero if it is absent. *)
 
+val add : stock -> t -> int -> stock
+(** [add stock resource amount] returns a new stock with [amount] more units of
+    [resource], adding an entry if [resource] was absent. The original stock is
+    unchanged. Raises [Invalid_argument] if [amount] is negative. *)
+
 val take_one : stock -> t -> (stock, take_error) result
 (** [take_one stock resource] returns a new stock with one fewer unit of
     [resource]. It returns [Error Out_of_stock] if none remain. The original
