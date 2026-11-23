@@ -36,6 +36,22 @@ let stock_tests =
            assert_equal 0 (Resource.quantity stock Resource.Berries);
            assert_equal (Error Resource.Out_of_stock)
              (Resource.take_one stock Resource.Berries) );
+         ( "add increases an existing resource" >:: fun _ ->
+           let original = Resource.stock_of_list [ (Resource.Wood, 2) ] in
+           let updated = Resource.add original Resource.Wood 3 in
+           assert_equal 5 (Resource.quantity updated Resource.Wood);
+           assert_equal 2 (Resource.quantity original Resource.Wood) );
+         ( "add inserts an absent resource" >:: fun _ ->
+           let updated =
+             Resource.add (Resource.stock_of_list []) Resource.Berries 1
+           in
+           assert_equal 1 (Resource.quantity updated Resource.Berries) );
+         ( "add rejects a negative amount" >:: fun _ ->
+           assert_raises (Invalid_argument "Resource.add: negative amount")
+             (fun () ->
+               ignore
+                 (Resource.add (Resource.stock_of_list []) Resource.Stone (-1)))
+         );
          ( "invalid quantities are rejected" >:: fun _ ->
            assert_raises
              (Invalid_argument "Resource.stock_of_list: negative quantity")
