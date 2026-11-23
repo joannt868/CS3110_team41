@@ -34,6 +34,17 @@ let quantity stock resource =
   | Some count -> count
   | None -> 0
 
+(** [add stock resource amount] returns a new stock with [amount] more units of
+    [resource]. The input stock is unchanged. *)
+let add stock resource amount =
+  if amount < 0 then invalid_arg "Resource.add: negative amount"
+  else if List.mem_assoc resource stock then
+    List.map
+      (fun (kind, count) ->
+        if kind = resource then (kind, count + amount) else (kind, count))
+      stock
+  else stock @ [ (resource, amount) ]
+
 (** [take_one stock resource] returns a new stock after removing one unit, or
     [Error Out_of_stock] when no units remain. The input stock is unchanged. *)
 let take_one stock resource =
